@@ -16,7 +16,7 @@ pybind11_add_module(example src/ndtess.cpp)
 target_compile_features(example PUBLIC cxx_auto_type)
 
 
-if(WITH_CXX_TESTS)
+if(${WITH_CXX_TESTS})
   add_subdirectory(tests)
   enable_testing()
   include(CTestLists.txt)
