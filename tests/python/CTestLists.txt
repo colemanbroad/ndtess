@@ -1,3 +1,12 @@
 #TODO: check how to run py.test-3 cross platform
+#find_package(PythonInterp REQUIRED)
+# add_test(NAME some_test
+#   COMMAND ${PYTHON_EXECUTABLE}
+#     ${CMAKE_CURRENT_BINARY_DIR}/run_test.py
+#     some_test)
 
-add_test(NAME in_python COMMAND py.test-3 test_in_python.py)
+add_test(NAME in_python COMMAND py.test-3 ${PROJECT_SOURCE_DIR}/tests/python/test_in_python.py)
+
+#add_test(NAME yuv_utils COMMAND test_yuv_utils WORKING_DIRECTORY ${PROJECT_BINARY_DIR}/tests)
+#set_tests_properties(hdf5_interface PROPERTIES ENVIRONMENT "HDF5_PLUGIN_PATH=${PROJECT_BINARY_DIR}/src")
+

@@ -11,8 +11,8 @@ if(NOT ${WITH_TESTS})
 endif()
 
 add_subdirectory(share/pybind11)
-pybind11_add_module(example src/ndtess.cpp)
-target_compile_features(example PUBLIC cxx_auto_type)
+pybind11_add_module(ndtess src/ndtess.cpp)
+target_compile_features(ndtess PUBLIC cxx_auto_type)
 
 
 if(${WITH_CXX_TESTS})
