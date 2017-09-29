@@ -100,8 +100,7 @@ class CatchTestCommand(st_test):
                                                  self.distutils_dir_name('temp')),
                                 shell=True)
 
-        import pytest
-        errno = errno + pytest.main(shlex.split(self.pytest_args))
+        errno = errno + pytest.main(shlex.split(self.pytest_args)+["tests/python"])
         sys.exit(errno)
 
 
