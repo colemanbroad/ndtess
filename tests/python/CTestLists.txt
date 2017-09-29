@@ -1,0 +1,3 @@
+#TODO: check how to run py.test-3 cross platform
+
+add_test(NAME in_python COMMAND py.test-3 test_in_python.py)
