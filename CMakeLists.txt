@@ -10,6 +10,7 @@ else()
   set(WITH_CXX_TESTS ON)
 endif()
 
+include_directories(include)
 add_subdirectory(share/pybind11)
 pybind11_add_module(ndtess src/ndtess.cpp)
 target_compile_features(ndtess PUBLIC cxx_auto_type)
