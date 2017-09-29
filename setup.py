@@ -92,14 +92,13 @@ class CatchTestCommand(st_test):
         import shlex
         import pytest
 
-        #super(CatchTestCommand, self).run()
-
-        # Run catch tests
+        # Run ctest
         errno = subprocess.call(['ctest']+shlex.split(self.ctest_args),
                                 cwd=os.path.join('build',
                                                  self.distutils_dir_name('temp')),
                                 shell=True)
 
+        # Run pytest and add the error code
         errno = errno + pytest.main(shlex.split(self.pytest_args)+["tests/python"])
         sys.exit(errno)
 
@@ -120,7 +119,6 @@ setup(
     # add extension module
     ext_modules=[CMakeExtension('ndtess')],
     # add custom build_ext command
-#    test_suite="tests/python",
     tests_requires=['pytest'],
     cmdclass={'build_ext' : CMakeBuild, 'test':CatchTestCommand},
     zip_safe=False,
