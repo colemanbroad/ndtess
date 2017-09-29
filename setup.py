@@ -8,7 +8,7 @@ import subprocess
 from distutils.version import LooseVersion
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from setuptools.command.test import test as TestCommand
+
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -52,7 +52,7 @@ class CMakeBuild(build_ext):
             build_args += ['--', '/m']
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-            build_args += ['--', '-j2']
+            build_args += ['--', '-j4']
 
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(
@@ -60,6 +60,8 @@ class CMakeBuild(build_ext):
             self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
+
+        print("[setup.py] calling cmake in ",self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
                               cwd=self.build_temp, env=env)
         subprocess.check_call(['cmake', '--build', '.'] + build_args,
@@ -67,30 +69,47 @@ class CMakeBuild(build_ext):
         print()  # Add an empty line for cleaner output
 
 
+from setuptools.command.test import test as st_test
 
-class CatchTestCommand(TestCommand):
+class CatchTestCommand(st_test):
     """
     A custom test runner to execute both Python unittest tests and C++ Catch-
     lib tests.
     """
+    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest"),('ctest-args=', 'a', "Arguments to pass to ctest")]
+
     def distutils_dir_name(self, dname):
         """Returns the name of a distutils build directory"""
         dir_name = "{dirname}.{platform}-{version[0]}.{version[1]}"
-        return dir_name.format(dirname=dname,
+        value = dir_name.format(dirname=dname,
                                platform=sysconfig.get_platform(),
                                version=sys.version_info)
+        print("[CatchTestCommand.distutils_dir_name] ",value)
+        return value
 
-    def run(self):
-        # Run Python tests
-        super(CatchTestCommand, self).run()
 
-        print("\nPython tests complete, now running C++ tests in %s ...\n" % os.path.join('build',
-                                         self.distutils_dir_name('tests/cpp')))
+    def run_tests(self):
+        import shlex
+        import pytest
+
+        #super(CatchTestCommand, self).run()
+
         # Run catch tests
-        subprocess.call(['first'],
-                        cwd=os.path.join('build',
-                                         self.distutils_dir_name('tests/cpp')),
-                        shell=True)
+        errno = subprocess.call(['ctest']+shlex.split(self.ctest_args),
+                                cwd=os.path.join('build',
+                                                 self.distutils_dir_name('temp')),
+                                shell=True)
+
+        import pytest
+        errno = errno + pytest.main(shlex.split(self.pytest_args))
+        sys.exit(errno)
+
+
+    def initialize_options(self):
+        st_test.initialize_options(self)
+        self.pytest_args = ''
+        self.ctest_args = ''
+
 
 setup(
     name='ndtess',
@@ -102,6 +121,8 @@ setup(
     # add extension module
     ext_modules=[CMakeExtension('ndtess')],
     # add custom build_ext command
-    cmdclass=dict(build_ext=CMakeBuild, test=CatchTestCommand),
+#    test_suite="tests/python",
+    tests_requires=['pytest'],
+    cmdclass={'build_ext' : CMakeBuild, 'test':CatchTestCommand},
     zip_safe=False,
 )
