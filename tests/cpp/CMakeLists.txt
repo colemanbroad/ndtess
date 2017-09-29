@@ -1,4 +1,4 @@
 include_directories(.)
 
-add_executable(first first.cpp)
-target_compile_features(first PUBLIC cxx_auto_type)
+add_executable(test_cpp_add_scalar test_cpp_add_scalar.cpp)
+target_compile_features(test_cpp_add_scalar PUBLIC cxx_auto_type)
