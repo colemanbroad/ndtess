@@ -1,1 +1,0 @@
-add_test(NAME use_cpp_11 COMMAND first)
