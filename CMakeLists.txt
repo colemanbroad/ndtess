@@ -13,7 +13,9 @@ endif()
 
 add_subdirectory(share/pybind11)
 pybind11_add_module(example src/ndtess.cpp)
+pybind11_add_module(numpywrap src/numpywrap.cpp)
 target_compile_features(example PUBLIC cxx_auto_type)
+target_compile_features(numpywrap PUBLIC cxx_auto_type)
 
 
 if(${WITH_CXX_TESTS})

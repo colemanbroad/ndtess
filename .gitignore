@@ -1,1 +1,16 @@
 *~
+
+.DS_Store
+.cache/
+__pycache__/
+build/
+share/.DS_Store
+src/.DS_Store
+src/__init__.py
+src/__pycache__/
+
+tests/.cache/
+tests/__init__.py
+tests/__pycache__/
+
+test_resources/
