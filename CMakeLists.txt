@@ -3,23 +3,29 @@ project(ndtess CXX)
 
 option(WITH_TESTS "Compile and provide unit tests (C++ and python)" ON)
 option(WITH_CXX_TESTS "Compile and provide unit tests (C++ only)" ON)
-option(WITH_PYTHON_TESTS "Compile and provide unit tests (python only)" ON)
 
 if(NOT ${WITH_TESTS})
   set(WITH_CXX_TESTS OFF)
-  set(WITH_PYTHON_TESTS OFF)
+else()
+  set(WITH_CXX_TESTS ON)
 endif()
 
-
+include_directories(include)
 add_subdirectory(share/pybind11)
+
 pybind11_add_module(example src/ndtess.cpp)
 pybind11_add_module(numpywrap src/numpywrap.cpp)
+pybind11_add_module(ndtess src/ndtess.cpp)
 target_compile_features(example PUBLIC cxx_auto_type)
 target_compile_features(numpywrap PUBLIC cxx_auto_type)
-
+target_compile_features(ndtess PUBLIC cxx_auto_type)
 
 if(${WITH_CXX_TESTS})
-  add_subdirectory(tests)
+  add_subdirectory(tests/cpp)
+  include(tests/cpp/CTestLists.txt)
+  set(WITH_TESTS ON)
+endif()
+
+if(${WITH_TESTS})
   enable_testing()
-  include(CTestLists.txt)
 endif()

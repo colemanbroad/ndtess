@@ -1,13 +1,7 @@
-#include <iostream>
 #include <pybind11/pybind11.h>
+#include "scalar_math.hpp"
 
-int add(int i, int j) {
-	std::cout << "hey this is C++!\n";
-    return i + j;
-}
-
-PYBIND11_MODULE(example, m) {
-    m.doc() = "pybind11 example plugin"; // optional module docstring
-
-    m.def("add", &add, "A function which adds two numbers");
+PYBIND11_MODULE(ndtess, m) {
+    m.doc() = "simple function to add two scalars";
+    m.def("add_scalars", &ndtess::scalar::add, "A function which adds two numbers");
 }
