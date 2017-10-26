@@ -99,6 +99,7 @@ def build_vorimg(heap, vorimg_0, distimg):
 # ----
 
 def tessellate_labimg(labimg, distimg=None):
+    print("[tessellate_labimg] :: ",labimg.shape)
     if distimg is None:
         distimg = np.zeros_like(labimg).astype('float32')
     heap = initialize_heapq(labimg, distimg)
