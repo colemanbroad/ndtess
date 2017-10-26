@@ -1,5 +1,8 @@
 *~
 
+*.sublime*
+
+notes.md
 .DS_Store
 .cache/
 __pycache__/
