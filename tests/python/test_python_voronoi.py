@@ -11,11 +11,12 @@ from skimage.filters import gaussian
 test_resources_dir = context.test_resources
 import os.path as path
 
+np.random.seed(1307) #the zip code of the MPI CBG
+
 @pytest.fixture(scope="module")
 def load_synthetic():
-    #64x64 of 0
-    #populate squares, lines and circles at random positions (fix seed)
 
+    #populate squares, lines and circles at random positions
     img = np.zeros((64,64),dtype=np.float32)
     classimg = np.zeros((64,64,3),dtype=np.int8)
 
@@ -30,22 +31,27 @@ def load_synthetic():
         img[(15-x_extend):(15+x_extend), y] = 30
         classimg[(15-x_extend):(15+x_extend), y, 1] = 2 #circles are class 2
 
+    #a tilted bar
     for x in range(35,60):
         ylo = 2*x - 70
         yhi = 2*x - 64
         img[x,ylo:yhi] = 100
-        classimg[x,ylo:yhi,2] = 3 #circles are class 3
+        classimg[x,ylo:yhi,2] = 3 #tilted bar is class 3
 
-    ## label image is build with labeled seeds
+    ## label image is build with labelled seeds
     ## we could also do this by using `scipy.ndimage.label()` on a binary mask...
     labimg = np.zeros(img.shape,dtype=np.int8)
     seeds0 = np.random.randint(0, labimg.shape[0], 11)
     seeds1 = np.random.randint(0, labimg.shape[1], 11)
-    labimg[seeds0, seeds1] = np.arange(1, 11+1, dtype=np.int8)
+
+    #Q: why do we set the value of the labelled image greater than the number of classes we have?
+    labimg[seeds0, seeds1] = np.arange(1, len(seeds1)+1, dtype=np.int8)
 
     ## the "distance" between adjacent pixels (i0,i1) and (j0,j1) in labimg
     ## is given by `d = distimg[i0,i1] + distimg[j0,j1]`, thus distimg must be
     ## everywhere > 0
+
+    #Q: What is 3.3? If we can, I'd prefer not having magic numbers anywhere!
     distimg = np.random.rand(*labimg.shape)*3.3
 
     assert np.alltrue(distimg >= 0)
