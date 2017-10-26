@@ -52,18 +52,20 @@ def load_synthetic():
     ## everywhere > 0
 
     #Q: What is 3.3? If we can, I'd prefer not having magic numbers anywhere!
+    #   Do you use 3.3 just to prevent 0s to come in?
     distimg = np.random.rand(*labimg.shape)*3.3
 
-    assert np.alltrue(distimg >= 0)
+    assert np.alltrue(distimg >= 0.)
 
     return { 'img' : img, 'distimg' : distimg, 'lab' : labimg, 'result' : classimg  }
 
 
-def test_tessellate_on_synth_image(load_synthetic):
+def test_tessellate_on_random_points(load_synthetic):
     """
     run the tesselation on a labelled image where all objects have been identified already (null test)
     """
-    vorimg = tess.tessellate_labimg(load_synthetic['lab'])    #, load_state['distimg'])
+    #Q: why not use img as the input? I thought lab was only needed to seed the algorithm?
+    vorimg = tess.tessellate_labimg(load_synthetic['lab'])
     vorimg2 = tess.tessellate_labimg(load_synthetic['lab'], load_synthetic['distimg'])
     mask = load_synthetic['lab']!=0
     
@@ -78,9 +80,36 @@ def test_tessellate_on_null_image(load_synthetic):
     """
     run the tesselation on a empty image
     """
-    allnull = load_synthetic['lab'].copy()
-    allnull[...] = 0
+    allnull = np.zeros(load_synthetic['lab'].shape,dtype=np.int8)
     vorimg = tess.tessellate_labimg(allnull) #, load_state['distimg'])
     assert type(vorimg) != type(None)
-    assert vorimg.shape != allnull.shape
-    assert vorimg == allnull
+    assert vorimg.shape == allnull.shape
+    assert np.alltrue(vorimg == allnull)
+
+def test_tessellate_on_geom_bodies(load_synthetic):
+    """
+    run the tesselation on an image with a circle, a bar and a rectangle
+    """
+    vorimg = tess.tessellate_labimg(load_synthetic['img'])
+    assert np.any(vorimg != 0)
+
+    print(load_synthetic['img'][:16,:16])
+    print(vorimg[:16,:16])
+
+    circlemask = (load_synthetic["result"][:,:,1]!=0)
+    assert np.alltrue(vorimg[circlemask] != 0)
+
+    barmask = (load_synthetic["result"][:,:,2]!=0)
+    assert np.alltrue(vorimg[barmask] != 0)
+
+    rectmask = (load_synthetic["result"][:,:,0]!=0)
+    assert np.alltrue(vorimg[rectmask] != 0)
+
+def test_tessellate_on_geom_bodies_only_objects(load_synthetic):
+    """
+    check if the resulting vorimg exposes areas where it didn't find anything in the first quadrant
+    """
+    iimg = load_synthetic['img']
+    vorimg = tess.tessellate_labimg(iimg)
+    assert np.any(vorimg != 0)
+    assert np.alltrue(vorimg[:5,:5] == iimg[:5,:5]) #Q: why does this fail?
