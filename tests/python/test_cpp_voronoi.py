@@ -6,7 +6,6 @@ import ndtess as tess
 from scipy.ndimage import label
 from skimage.filters import gaussian
 
-test_resources_dir = context.test_resources
 import os.path as path
 
 
