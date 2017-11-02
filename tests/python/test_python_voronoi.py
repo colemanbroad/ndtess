@@ -18,25 +18,32 @@ def load_synthetic():
 
     #populate squares, lines and circles at random positions
     img = np.zeros((64,64),dtype=np.float32)
+
     classimg = np.zeros((64,64,3),dtype=np.int8)
 
     #a rectangle of intensity 42
     img[30:50,30:40] = 42
     classimg[30:50,30:40,0] = 1 #circles are class 1
 
-    #a circle at (15,15) of intensity 30
+    #a circle at (15,15) with radius = 10 of intensity 30
+    radius = 10
     for y in range(5,25):
         y_extend = 15 - y
-        x_extend = int(np.sqrt(100 - (y_extend*y_extend)))
+        x_extend = int(np.sqrt((radius*radius) - (y_extend*y_extend)))
         img[(15-x_extend):(15+x_extend), y] = 30
         classimg[(15-x_extend):(15+x_extend), y, 1] = 2 #circles are class 2
 
-    #a tilted bar
+    #a tilted bar from (35,0) - [59,54]
     for x in range(35,60):
         ylo = 2*x - 70
         yhi = 2*x - 64
         img[x,ylo:yhi] = 100
         classimg[x,ylo:yhi,2] = 3 #tilted bar is class 3
+
+    # #something for later
+    # noise = np.random.normal(5,3,64*64).reshape(img.shape)
+    # noisy_img = np.zeros((64,64),dtype=np.float32)
+    # noisy_img = noisy_img + noise + img
 
     ## label image is build with labelled seeds
     ## we could also do this by using `scipy.ndimage.label()` on a binary mask...
@@ -51,13 +58,12 @@ def load_synthetic():
     ## is given by `d = distimg[i0,i1] + distimg[j0,j1]`, thus distimg must be
     ## everywhere > 0
 
-    #Q: What is 3.3? If we can, I'd prefer not having magic numbers anywhere!
-    #   Do you use 3.3 just to prevent 0s to come in?
+    #distimg can be any distribution of non-zero floating point numbers
     distimg = np.random.rand(*labimg.shape)*3.3
 
     assert np.alltrue(distimg >= 0.)
 
-    return { 'img' : img, 'distimg' : distimg, 'lab' : labimg, 'result' : classimg  }
+    return { 'img' : img, 'distimg' : distimg, 'lab' : labimg, 'result' : classimg ,  }
 
 
 def test_tessellate_on_random_points(load_synthetic):
@@ -68,7 +74,7 @@ def test_tessellate_on_random_points(load_synthetic):
     vorimg = tess.tessellate_labimg(load_synthetic['lab'])
     vorimg2 = tess.tessellate_labimg(load_synthetic['lab'], load_synthetic['distimg'])
     mask = load_synthetic['lab']!=0
-    
+
     ## Obviously, this is not a complete test for correctness, but it will catch the simplest bugs.
     assert np.alltrue(vorimg[mask] == load_synthetic['lab'][mask])
     assert np.alltrue(vorimg2[mask] == load_synthetic['lab'][mask])
@@ -93,23 +99,41 @@ def test_tessellate_on_geom_bodies(load_synthetic):
     vorimg = tess.tessellate_labimg(load_synthetic['img'])
     assert np.any(vorimg != 0)
 
-    print(load_synthetic['img'][:16,:16])
-    print(vorimg[:16,:16])
-
+    #circle
     circlemask = (load_synthetic["result"][:,:,1]!=0)
     assert np.alltrue(vorimg[circlemask] != 0)
+    assert np.alltrue(vorimg[:5,:5] == vorimg[0,0])
+    assert np.alltrue(vorimg[:5,:5] == 30)
+    assert np.alltrue(vorimg[16,16] == 30)
 
+    #tilted bar
     barmask = (load_synthetic["result"][:,:,2]!=0)
     assert np.alltrue(vorimg[barmask] != 0)
+    assert np.alltrue(vorimg[60:,60:] == 100) #not inside the object
+    assert np.alltrue(vorimg[46:50,28] == 100) #inside the object
 
     rectmask = (load_synthetic["result"][:,:,0]!=0)
     assert np.alltrue(vorimg[rectmask] != 0)
 
-def test_tessellate_on_geom_bodies_only_objects(load_synthetic):
+def test_tessellate_on_geom_bodies_with_distimg(load_synthetic):
     """
-    check if the resulting vorimg exposes areas where it didn't find anything in the first quadrant
+    run the tesselation on an image with a circle, a bar and a rectangle using an arbitrary distimg to start
     """
-    iimg = load_synthetic['img']
-    vorimg = tess.tessellate_labimg(iimg)
+    vorimg = tess.tessellate_labimg(load_synthetic['img'], load_synthetic['distimg'])
     assert np.any(vorimg != 0)
-    assert np.alltrue(vorimg[:5,:5] == iimg[:5,:5]) #Q: why does this fail?
+
+    #circle
+    circlemask = (load_synthetic["result"][:,:,1]!=0)
+    assert np.alltrue(vorimg[circlemask] != 0)
+    assert np.alltrue(vorimg[:5,:5] == vorimg[0,0])
+    assert np.alltrue(vorimg[:5,:5] == 30)
+    assert np.alltrue(vorimg[16,16] == 30)
+
+    #tilted bar
+    barmask = (load_synthetic["result"][:,:,2]!=0)
+    assert np.alltrue(vorimg[barmask] != 0)
+    assert np.alltrue(vorimg[60:,60:] == 100) #not inside the object
+    assert np.alltrue(vorimg[46:50,28] == 100) #inside the object
+
+    rectmask = (load_synthetic["result"][:,:,0]!=0)
+    assert np.alltrue(vorimg[rectmask] != 0)
