@@ -51,7 +51,6 @@ def load_synthetic():
     seeds0 = np.random.randint(0, labimg.shape[0], 11)
     seeds1 = np.random.randint(0, labimg.shape[1], 11)
 
-    #Q: why do we set the value of the labelled image greater than the number of classes we have?
     labimg[seeds0, seeds1] = np.arange(1, len(seeds1)+1, dtype=np.int8)
 
     ## the "distance" between adjacent pixels (i0,i1) and (j0,j1) in labimg
@@ -70,7 +69,7 @@ def test_tessellate_on_random_points(load_synthetic):
     """
     run the tesselation on a labelled image where all objects have been identified already (null test)
     """
-    #Q: why not use img as the input? I thought lab was only needed to seed the algorithm?
+
     vorimg = tess.tessellate_labimg(load_synthetic['lab'])
     vorimg2 = tess.tessellate_labimg(load_synthetic['lab'], load_synthetic['distimg'])
     mask = load_synthetic['lab']!=0
