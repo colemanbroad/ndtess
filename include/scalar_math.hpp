@@ -6,8 +6,9 @@
 namespace ndtess {
 
     namespace scalar {
+
         int add(int i, int j) {
-            std::cout << "hey this is C++!\n";
+            std::cout << "[ndtess::scalar] hey this is adding 2 scalars with C++!\n";
             return i + j;
         }
 
