@@ -63,11 +63,38 @@ TEST_CASE_METHOD( image_fixture, "fixture data correct", "[image]" ) {
     REQUIRE( data_.data() != nullptr );
     REQUIRE( data_[0] < 1.f );
 
-    REQUIRE( data_[3*shape[1]+8] != 0.f );
-    REQUIRE( data_[3*shape[1]+8] == 42.f );
+    SECTION("small rectangle (x,y) = [6:11,2:5] was set"){
+        REQUIRE( data_[3*shape[1]+8] != 0.f );
+        REQUIRE( data_[3*shape[1]+8] == 42.f );
+    }
 
-    REQUIRE( data_[24*shape[1]+24] != 0.f );
-    REQUIRE( data_[24*shape[1]+24] == 100.f );
+    SECTION("small circle at (24,24) with radius 4"){
+        REQUIRE( data_[24*shape[1]+24] != 0.f );
+        REQUIRE( data_[24*shape[1]+24] == 100.f );
+    }
+
+}
 
 
+TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
+
+    REQUIRE( data_.data() != nullptr );
+
+    SECTION("default heap is not empty from input data"){
+
+        auto q = ndtess::heap::build(data_.data(),shape);
+        REQUIRE( ! q.empty() );
+
+    }
+
+    SECTION("compare outcome to python implementation"){
+
+        auto q = ndtess::heap::build(data_.data(),shape);
+        auto i = q.top();
+
+        REQUIRE( std::get<1>(i) == 5 );
+        REQUIRE( std::get<2>(i) == 2 );
+        REQUIRE( std::get<3>(i) == 42. );
+
+    }
 }
