@@ -11,23 +11,47 @@ namespace ndtess {
 
     namespace heap {
 
-        template <typename label_t>
-        using item = std::tuple<float,std::size_t, std::size_t,label_t>;
+        template <typename T>
+        using item = std::tuple<float,std::size_t, std::size_t,T>;
 
+        template <typename T>
+        struct compare {
+            bool operator()(const item<T>& _lhs, const item<T>& _rhs){
+                return std::get<0>(_lhs) < std::get<0>(_rhs);
+            }
+        };
+
+        template <typename T>
+        using pqueue = std::priority_queue<item<T>,
+                                           std::vector<item<T> >,
+                                           decltype(&compare<T>::operator())>;
+
+        template <typename T>
+        using pvec = std::vector< item<T> >;
 
 
 
         template <typename T>
-        static std::priority_queue<item<T>> build(const T* _lab,
-                                               const std::vector<std::size_t>& _shape,
-                                               const float* _dist){
+        static pvec<T> build(const T* _lab,
+                             const std::vector<std::size_t>& _shape,
+                             const float* _dist){
 
-            using queue = std::priority_queue<item<T>>;
+            using local_item = item<T>;
+            using queue = pqueue<T>;
+            using valloc = typename std::vector<local_item>::allocator_type;
+
+            const std::size_t len = std::accumulate(std::begin(_shape),
+                                                    std::end(_shape),
+                                                    1,
+                                                    std::multiplies<std::size_t>()
+                );
 
             const T nil = 0;
-            queue q;
+
             static constexpr int offsets_x[4] = {-1,1,0,0};
             static constexpr int offsets_y[4] = {0,0,-1,1};
+            std::vector<local_item> under_heap;
+            under_heap.reserve(4*len);
 
             for(int off = 0;off < 4;++off){
                 std::size_t y_lo = offsets_y[off] < 0 ? std::abs(offsets_y[off]) : 0;
@@ -42,23 +66,25 @@ namespace ndtess {
                         if(!(_lab[pix_offset]!=nil))
                             continue;
                         float res = 1. + std::abs(_dist[pix_offset] + _dist[(y+offsets_y[off])*_shape[0] + (x+offsets_x[off])]);
-                        q.push(std::make_tuple(res,
-                                               y+offsets_y[off],
-                                               x+offsets_x[off],
-                                               _lab[pix_offset]));
+                        under_heap.push_back(std::make_tuple(res,
+                                                             y+offsets_y[off],
+                                                             x+offsets_x[off],
+                                                             _lab[pix_offset]));
                     }
                 }
             }
 
+            compare<T> lc;
 
-            return q;
+            std::make_heap(under_heap.begin(),under_heap.end(), lc);
+            return under_heap;
 
         }
 
 
          template <typename T>
-        static std::priority_queue<item<T>> build(const T* _lab,
-                                               const std::vector<std::size_t>& _shape){
+         static pvec<T> build(const T* _lab,
+                              const std::vector<std::size_t>& _shape){
 
             const std::size_t len = std::accumulate(std::begin(_shape),
                                                     std::end(_shape),

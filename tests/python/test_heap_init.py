@@ -40,4 +40,4 @@ def test_heapq_init_from_zeroes(load_synthetic):
 
     assert q[0]
 
-    print(q[0])
+    print(q[0], len(q))
