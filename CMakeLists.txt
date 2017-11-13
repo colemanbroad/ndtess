@@ -19,6 +19,7 @@ target_compile_features(example PUBLIC cxx_auto_type)
 target_compile_features(ndtess PUBLIC cxx_auto_type)
 
 if(${WITH_CXX_TESTS})
+  add_definitions(-g)
   add_subdirectory(tests/cpp)
   include(tests/cpp/CTestLists.txt)
   set(WITH_TESTS ON)
