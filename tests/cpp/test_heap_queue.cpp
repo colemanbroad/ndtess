@@ -6,27 +6,13 @@
 #include "catch.hpp"
 #include "heapqueue.hpp"
 
-// #include "pybind11/numpy.h"
-// #include "pybind11/pybind11.h"
-
-
-// namespace py = pybind11;
-
-// static void setup_environment(){
-//     try{
-//         py::module::import("numpy");
-//     } catch (...){
-//         std::cerr << "urgs, unable to load numpy\n";
-//     }
-// }
-
 struct image_fixture {
 
     std::vector<std::size_t> shape;
     const std::size_t len;
     std::vector<std::size_t> stride;
     std::vector<float> data_;
-    // py::array_t<float,2>* image_;
+
 
     image_fixture():
         shape({32,32}),
@@ -39,19 +25,12 @@ struct image_fixture {
                 if((x > 5 && x < 11) && (y > 1 && y < 5))
                     data_[y*shape[0] + x] = 42.f;
 
-                std::size_t x_rel = x - 24;
-                std::size_t y_rel = y - 24;
-                if(((x_rel*x_rel) + (y_rel*y_rel)) < 16)
-                    data_[y*shape[0] + x] = 100.f;
+                // std::size_t x_rel = x - 24;
+                // std::size_t y_rel = y - 24;
+                // if(((x_rel*x_rel) + (y_rel*y_rel)) < 16)
+                //     data_[y*shape[0] + x] = 100.f;
             }
         }
-        // py::capsule free_when_done(data_.data(), [](void *f) {
-        //     float *foo = reinterpret_cast<float *>(f);
-        //     delete[] foo;
-        // });
-        // setup_environment();
-        // image_ = new py::array_t<float,2>();
-        // // image_ = py::array_t<float,2>(shape,stride,data_.data(),free_when_done);
 
     }
 
@@ -69,10 +48,10 @@ TEST_CASE_METHOD( image_fixture, "fixture data correct", "[image]" ) {
         REQUIRE( data_[3*shape[1]+8] == 42.f );
     }
 
-    SECTION("small circle at (24,24) with radius 4"){
-        REQUIRE( data_[24*shape[1]+24] != 0.f );
-        REQUIRE( data_[24*shape[1]+24] == 100.f );
-    }
+    // SECTION("small circle at (24,24) with radius 4"){
+    //     REQUIRE( data_[24*shape[1]+24] != 0.f );
+    //     REQUIRE( data_[24*shape[1]+24] == 100.f );
+    // }
 
 }
 
@@ -149,7 +128,7 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
         auto q = ndtess::heap::build(data_.data(),shape);
 
-        REQUIRE( q.size() == 690 );
+        REQUIRE( q.size() == 60 );
 
         auto i = q.front();
 

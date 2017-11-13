@@ -16,13 +16,13 @@ def load_synthetic():
     img[6:11,2:5] = 42
 
     #a circle at (15,15) with radius = 10 of intensity 30
-    radius = 4
-    for y in range(0,32):
-        for x in range(0,32):
-            y_extend = y - 24
-            x_extend = x - 24
-            if ((x_extend**2)+(x_extend**2)) < radius**2:
-                img[x,y] = 100
+    # radius = 4
+    # for y in range(0,32):
+    #     for x in range(0,32):
+    #         y_extend = y - 24
+    #         x_extend = x - 24
+    #         if ((x_extend**2)+(x_extend**2)) < radius**2:
+    #             img[x,y] = 100
 
 
     #distimg can be any distribution of non-zero floating point numbers
