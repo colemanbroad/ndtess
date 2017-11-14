@@ -41,7 +41,7 @@ def initialize_heapq(labimg, distimg):
                          d1 = distimg[x,y]
                          d2 = distimg[x2, y2]
                          dist = distance(d1,d2)
-                         print(">> (%3i %3i) %4.1f (%3i %3i) %4.1f %4.1f" % (y,x,d1,y2,x2,d2,l))
+                         #print(">> (%3i %3i) %4.1f (%3i %3i) %4.1f %4.1f" % (y,x,d1,y2,x2,d2,l))
                          heapq.heappush(heap, (dist, x2, y2, l))
 
     # for y in range(labimg.shape[0]):

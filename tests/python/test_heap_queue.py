@@ -27,8 +27,14 @@ def load_synthetic():
 
     #distimg can be any distribution of non-zero floating point numbers
     distimg = np.random.rand(*img.shape)*3.3
+    cdi = np.zeros_like(img).astype("float32")
+    cdi[:] = 3.3 #some number
 
-    return { 'img' : img, 'distimg' : distimg }
+
+    sinargs = np.linspace(0,1,num=img.size).reshape(img.shape)
+    sindistimg = np.sin( sinargs ) + .1
+
+    return { 'img' : img, 'di' : distimg, 'cdi' : cdi, 'sindi' : sindistimg }
 
 
 def test_heapq_init_from_zeroes(load_synthetic):
@@ -44,4 +50,53 @@ def test_heapq_init_from_zeroes(load_synthetic):
     #         f.write("\n")
 
     assert q[0]
-    print(q[0], len(q))
+    assert q[0][-1] == 100.
+    print("# from_0s > ",q[0], len(q))
+
+
+def test_heapq_init_from_constant(load_synthetic):
+    """
+    run the tesselation on a labelled image where all objects have been identified already (null test)
+    """
+
+    assert load_synthetic["cdi"].shape == load_synthetic["img"].shape
+    assert np.allclose(load_synthetic["cdi"], 3.3)
+
+    q = tess.initialize_heapq(load_synthetic["img"],
+                              load_synthetic["cdi"])
+
+
+    assert q[0]
+    assert q[0][-1] == 100.
+    print("# from_constant > ",q[0], len(q))
+
+
+def test_heapq_init_from_sinus(load_synthetic):
+    """
+    run the tesselation on a labelled image where all objects have been identified already (null test)
+    """
+
+    assert load_synthetic["cdi"].shape == load_synthetic["img"].shape
+
+    q = tess.initialize_heapq(load_synthetic["img"],
+                              load_synthetic["sindi"])
+
+
+    assert q[0]
+    assert q[0][-1] == 100.
+    print("# from_sinus > ",q[0], len(q))
+
+def test_heapq_init_from_random(load_synthetic):
+    """
+    run the tesselation on a labelled image where all objects have been identified already (null test)
+    """
+
+    assert load_synthetic["cdi"].shape == load_synthetic["img"].shape
+
+    q = tess.initialize_heapq(load_synthetic["img"],
+                              load_synthetic["di"])
+
+
+    assert q[0]
+    assert q[0][-1] == 100.
+    print("# from_random > ",q[0], len(q))
