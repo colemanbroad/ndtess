@@ -19,7 +19,13 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
 
-    user_options = [('cmake-args=', 'C', "Arguments to pass to cmake call"),('build-args=', 'B', "Arguments to pass to cmake build command")]
+    user_options = [('cmake-args=', 'C', "Arguments to pass to cmake call"),
+                    ('build-args=', 'A', "Arguments to pass to cmake build command (after --)")
+    ]
+
+    def initialize_options(self):
+        self.user_cmake_args = None
+        self.user_build_args = None
 
     def run(self):
         try:
@@ -58,6 +64,12 @@ class CMakeBuild(build_ext):
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j4']
 
+        if self.user_cmake_args:
+            cmake_args += self.user_cmake_args
+
+        if self.user_build_args:
+            build_args += self.user_build_args
+
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(
             env.get('CXXFLAGS', ''),
@@ -68,6 +80,7 @@ class CMakeBuild(build_ext):
         print("[setup.py] calling cmake in ",self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
                               cwd=self.build_temp, env=env)
+
         subprocess.check_call(['cmake', '--build', '.'] + build_args,
                               cwd=self.build_temp)
         print()  # Add an empty line for cleaner output
@@ -81,6 +94,10 @@ class CatchTestCommand(st_test):
     lib tests.
     """
     user_options = [('pytest-args=', 'P', "Arguments to pass to pytest"),('ctest-args=', 'C', "Arguments to pass to ctest")]
+
+    def initialize_options(self):
+        self.pytest_args = None
+        self.ctest_args = None
 
     def distutils_dir_name(self, dname):
         """Returns the name of a distutils build directory"""
@@ -97,13 +114,21 @@ class CatchTestCommand(st_test):
         import pytest
 
         # Run ctest
-        errno = subprocess.call(['ctest']+shlex.split(self.ctest_args),
+        cmd = ['ctest']
+        if self.ctest_args:
+            cmd += shlex.split(self.ctest_args)
+
+        errno = subprocess.call(cmd,
                                 cwd=os.path.join('build',
                                                  self.distutils_dir_name('temp')),
                                 shell=True)
 
         # Run pytest and add the error code
-        errno = errno + pytest.main(shlex.split(self.pytest_args)+["tests/python"])
+        pyt_cmd = []
+        if self.pytest_args:
+            pyt_cmd = shlex.split(self.pytest_args)
+        pyt_cmd += ["tests/python"]
+        errno = errno + pytest.main(pyt_cmd)
         sys.exit(errno)
 
 
