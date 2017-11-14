@@ -1,10 +1,13 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 
 #include "catch.hpp"
 #include "heapqueue.hpp"
+
+
 
 struct image_fixture {
 
@@ -15,21 +18,30 @@ struct image_fixture {
 
 
     image_fixture():
-        shape({32,32}),
-        len(32*32),
-        stride({32*sizeof(float),sizeof(float)}),
-        data_(32*32,0.f){
+        shape({16,16}),
+        len(16*16),
+        stride({16*sizeof(float),sizeof(float)}),
+        data_(16*16,0.f){
 
         for(std::size_t y = 0;y<shape[1];++y){
-            for(std::size_t x = 0;x<shape[1];++x){
-                if((x > 5 && x < 11) && (y > 1 && y < 5))
+            for(std::size_t x = 0;x<shape[0];++x){
+                if((x > 0 && x < 5) && (y > 10 && y < 15))
                     data_[y*shape[0] + x] = 42.f;
 
-                // std::size_t x_rel = x - 24;
-                // std::size_t y_rel = y - 24;
-                // if(((x_rel*x_rel) + (y_rel*y_rel)) < 16)
-                //     data_[y*shape[0] + x] = 100.f;
+                std::size_t x_rel = x - 12;
+                std::size_t y_rel = y - 4;
+                if(((x_rel*x_rel) + (y_rel*y_rel)) < 16){
+                    data_[y*shape[0] + x] = 100.f;
+                }
+
+#ifdef NDTESS_TRACE
+                std::cout << std::setw(4) << data_[y*shape[0] + x] << " ";
+#endif
             }
+
+#ifdef NDTESS_TRACE
+            std::cout << "\n";
+#endif
         }
 
     }
@@ -44,14 +56,14 @@ TEST_CASE_METHOD( image_fixture, "fixture data correct", "[image]" ) {
     REQUIRE( data_[0] < 1.f );
 
     SECTION("small rectangle (x,y) = [6:11,2:5] was set"){
-        REQUIRE( data_[3*shape[1]+8] != 0.f );
-        REQUIRE( data_[3*shape[1]+8] == 42.f );
+        REQUIRE( data_[13*shape[1]+2] != 0.f );
+        REQUIRE( data_[13*shape[1]+2] == 42.f );
     }
 
-    // SECTION("small circle at (24,24) with radius 4"){
-    //     REQUIRE( data_[24*shape[1]+24] != 0.f );
-    //     REQUIRE( data_[24*shape[1]+24] == 100.f );
-    // }
+    SECTION("small circle at (24,24) with radius 4"){
+        REQUIRE( data_[2*shape[1]+12] != 0.f );
+        REQUIRE( data_[2*shape[1]+12] == 100.f );
+    }
 
 }
 
@@ -128,12 +140,14 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
         auto q = ndtess::heap::build(data_.data(),shape);
 
-        REQUIRE( q.size() == 60 );
+        REQUIRE( q.size() == 239 );
 
         auto i = q.front();
 
-        REQUIRE( std::get<1>(i) == 5 );
-        REQUIRE( std::get<2>(i) == 2 );
+        REQUIRE( std::get<0>(i) == Approx ( 1.f ) );
+        CHECK( std::get<1>(i) == 0 );
+        CHECK( std::get<2>(i) == 11 );
+        REQUIRE( std::get<3>(i) == Approx ( 42.f ) );
 
     }
 }

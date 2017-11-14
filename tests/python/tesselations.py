@@ -16,12 +16,12 @@ def show_basic_voronoi_img(coords, img):
 NEIGHBOR_GRID = np.array([(-1, 0), (1, 0), (0, -1), (0, 1)])
 
 def _inbounds(img):
-    xmax, ymax = img.shape
-    def f(x,y):
+    ymax, xmax = img.shape
+    def f(y,x):
         return 0<=x<xmax and 0<=y<ymax
     return f
 
-def distance(x0,y0,f0, x1,y1,f1):
+def distance(f0,f1):
     return np.abs(f0+f1) + 1.0
 
 # ---- 
@@ -31,16 +31,16 @@ def initialize_heapq(labimg, distimg):
     heapq.heapify(heap)
     inbounds = _inbounds(labimg)
 
-    for x in range(labimg.shape[0]):
-        for y in range(labimg.shape[1]):
-            l = labimg[x,y]
+    for y in range(labimg.shape[0]):
+        for x in range(labimg.shape[1]):
+            l = labimg[y,x]
             if l != 0:
                 for dx,dy in NEIGHBOR_GRID:
                     x2,y2 = x+dx, y+dy
-                    if inbounds(x2,y2):
-                        d1 = distimg[x,y]
-                        d2 = distimg[x2, y2]
-                        dist = distance(x,y,d1, x2,y2,d2)
+                    if inbounds(y2,x2):
+                        d1 = distimg[y,x]
+                        d2 = distimg[y2,x2]
+                        dist = distance(d1,d2)
                         heapq.heappush(heap, (dist, x2, y2, l))
     return heap
 

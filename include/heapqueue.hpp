@@ -53,26 +53,33 @@ namespace ndtess {
             std::vector<local_item> under_heap;
             under_heap.reserve(4*len);
 
-            for(int off = 0;off < 4;++off){
-                std::size_t y_lo = offsets_y[off] < 0 ? std::abs(offsets_y[off]) : 0;
-                std::size_t y_hi = offsets_y[off] > 0 ? _shape[1] - offsets_y[off] : _shape[1];
+            std::int64_t x2 = 0;
+            std::int64_t y2 = 0;
+            constexpr T epsilon = std::numeric_limits<T>::epsilon();
 
-                std::size_t x_lo = offsets_x[off] < 0 ? std::abs(offsets_x[off]) : 0;
-                std::size_t x_hi = offsets_x[off] > 0 ? _shape[0] - offsets_x[off] : _shape[0];
+            for(std::int64_t y = 0;y < _shape[1];++y){
+                for(std::int64_t x = 0;x < _shape[0];++x){
 
-                for(std::size_t y = y_lo;y < y_hi;++y){
-                    for(std::size_t x = x_lo;x < x_hi;++x){
-                        std::size_t pix_offset = y*_shape[0] + x;
-                        if(!(_lab[pix_offset]!=nil))
+                    std::size_t pix_offset = y*_shape[0] + x;
+                    if(std::abs(_lab[pix_offset]) < epsilon)
+                        continue;
+
+                    for(int off = 0;off < 4;++off){
+
+                        x2 = x + offsets_x[off];
+                        y2 = y + offsets_y[off];
+                        if(!( x2 >= 0 && x2 < _shape[0] && y2 >= 0 && y2 < _shape[1] ))
                             continue;
-                        float res = 1. + std::abs(_dist[pix_offset] + _dist[(y+offsets_y[off])*_shape[0] + (x+offsets_x[off])]);
+
+                        float res = 1. + std::abs(_dist[pix_offset] + _dist[(y2)*_shape[0] + (x2)]);
                         under_heap.push_back(std::make_tuple(res,
-                                                             y+offsets_y[off],
-                                                             x+offsets_x[off],
+                                                             x2,
+                                                             y2,
                                                              _lab[pix_offset]));
                     }
                 }
             }
+
 
             compare<T> lc;
 
