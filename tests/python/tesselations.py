@@ -83,7 +83,7 @@ def initialize_heapq_coords(coords, labels, distimg):
             x2,y2 = x+dx, y+dy
             d1 = distimg[x,y]
             d2 = distimg[x2, y2]
-            dist = distance(x,y,d1, x2,y2,d2)
+            dist = distance(d1,d2)
             heapq.heappush(heap, (dist, x2, y2, l))
     return heap, vorimg
 
@@ -105,7 +105,7 @@ def build_vorimg(heap, vorimg_0, distimg):
                     if nl == 0 : # then unclaimed
                         d1 = distimg[x,y]
                         d2 = distimg[x2, y2]
-                        nd = distance(x,y,d1, x2,y2,d2) + d
+                        nd = distance(d1,d2) + d
                         heapq.heappush(heap, (nd, x2, y2, l))
     return vorimg
 
