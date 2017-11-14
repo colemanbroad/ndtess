@@ -84,6 +84,8 @@ def test_heapq_init_from_sinus(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 100.
+    assert q[0][1] == 0
+    assert q[0][2] == 10
     print("# from_sinus > ",q[0], len(q))
 
 def test_heapq_init_from_random(load_synthetic):
@@ -99,4 +101,6 @@ def test_heapq_init_from_random(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 100.
+    assert q[0][1] == 7
+    assert q[0][2] == 15
     print("# from_random > ",q[0], len(q))

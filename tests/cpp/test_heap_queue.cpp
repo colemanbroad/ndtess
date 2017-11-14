@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iomanip>
 #include <algorithm>
+#include <random>
+#include <cmath>
 
 #include "catch.hpp"
 #include "detail/heapqueue.hpp"
@@ -11,16 +13,22 @@
 struct image_fixture {
 
     std::vector<std::size_t> shape;
-    const std::size_t len;
+    static constexpr std::size_t len = 16*16;
     std::vector<std::size_t> stride;
     std::vector<float> data_;
 
+    std::vector<float> constant_map_;
+    std::vector<float> sinus_map_;
+    std::vector<float> random_map_;
 
     image_fixture():
         shape({16,16}),
-        len(16*16),
         stride({16*sizeof(float),sizeof(float)}),
-        data_(16*16,0.f){
+        data_(len,0.f),
+        constant_map_(len,3.3f),
+        sinus_map_(len,0.f),
+        random_map_(len,0.f)
+        {
 
         for(std::size_t y = 0;y<shape[1];++y){
             for(std::size_t x = 0;x<shape[0];++x){
@@ -42,6 +50,19 @@ struct image_fixture {
             std::cout << "\n";
 #endif
         }
+
+        std::size_t count = 0;
+        for(float& el : sinus_map_){
+            float x = float(count) / sinus_map_.size();
+                el = std::sin(x) + 0.1;
+        }
+
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        gen.seed(1307);
+
+        std::uniform_real_distribution<> d(0.,1.);
+        std::generate(std::begin(random_map_),std::end(random_map_),[&]( ){ return 3.3*d(gen);});
 
     }
 
@@ -134,7 +155,7 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
     }
 
-    SECTION("compare outcome to python implementation"){
+    SECTION("compare outcome to python implementation with default map"){
 
         auto q = ndtess::heap::build(data_.data(),shape);
 
@@ -145,6 +166,48 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
         REQUIRE( std::get<0>(i) == Approx ( 1.f ) );
         CHECK( std::get<1>(i) == 10 );
         CHECK( std::get<2>(i) == 0 );
+        REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
+
+    }
+
+    SECTION("compare outcome to python implementation with constant map"){
+
+        auto q = ndtess::heap::build(data_.data(),shape, constant_map_.data());
+
+        REQUIRE( q.size() == 239 );
+
+        auto i = q.top();
+
+        REQUIRE( std::get<1>(i) == 10 );
+        REQUIRE( std::get<2>(i) == 0 );
+        REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
+
+    }
+
+    SECTION("compare outcome to python implementation with sinus map"){
+
+        auto q = ndtess::heap::build(data_.data(),shape, constant_map_.data());
+
+        REQUIRE( q.size() == 239 );
+
+        auto i = q.top();
+
+        REQUIRE( std::get<1>(i) == 10 );
+        REQUIRE( std::get<2>(i) == 0 );
+        REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
+
+    }
+
+    SECTION("compare outcome to python implementation with random map"){
+
+        auto q = ndtess::heap::build(data_.data(),shape, random_map_.data());
+
+        REQUIRE( q.size() == 239 );
+
+        auto i = q.top();
+
+        // REQUIRE( std::get<1>(i) == 15 );
+        // REQUIRE( std::get<2>(i) == 7 );
         REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
 
     }
