@@ -7,9 +7,11 @@
 #include <random>
 #include <cmath>
 
-#include "catch.hpp"
 #include "detail/heapqueue.hpp"
+
+#include "catch.hpp"
 #include "fixtures.hpp"
+
 
 TEST_CASE_METHOD( image_fixture, "fixture data correct", "[image]" ) {
 
