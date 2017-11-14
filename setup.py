@@ -11,12 +11,16 @@ from setuptools.command.build_ext import build_ext
 
 
 class CMakeExtension(Extension):
+
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
 
 
 class CMakeBuild(build_ext):
+
+    user_options = [('cmake-args=', 'C', "Arguments to pass to cmake call"),('build-args=', 'B', "Arguments to pass to cmake build command")]
+
     def run(self):
         try:
             out = subprocess.check_output(['cmake', '--version'])
@@ -76,7 +80,7 @@ class CatchTestCommand(st_test):
     A custom test runner to execute both Python unittest tests and C++ Catch-
     lib tests.
     """
-    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest"),('ctest-args=', 'a', "Arguments to pass to ctest")]
+    user_options = [('pytest-args=', 'P', "Arguments to pass to pytest"),('ctest-args=', 'C', "Arguments to pass to ctest")]
 
     def distutils_dir_name(self, dname):
         """Returns the name of a distutils build directory"""
