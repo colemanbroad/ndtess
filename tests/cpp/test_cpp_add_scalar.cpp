@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "scalar_math.hpp"
+#include "detail/scalar_math.hpp"
 
 TEST_CASE( "tests on scalars", "[scalars]" ) {
 

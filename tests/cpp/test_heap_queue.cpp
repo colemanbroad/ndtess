@@ -6,9 +6,7 @@
 #include <algorithm>
 
 #include "catch.hpp"
-#include "heapqueue.hpp"
-
-
+#include "detail/heapqueue.hpp"
 
 struct image_fixture {
 

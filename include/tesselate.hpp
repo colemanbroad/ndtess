@@ -1,7 +1,7 @@
 #ifndef TESSELATE_H
 #define TESSELATE_H
 
-#include "heapqueue.hpp"
+#include "detail/heapqueue.hpp"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"

@@ -2,8 +2,8 @@
 #define NDTESS_H
 
 #include <pybind11/pybind11.h>
-#include "scalar_math.hpp"
-#include "vector_math.hpp"
+#include "detail/scalar_math.hpp"
+#include "detail/vector_math.hpp"
 #include "tesselate.hpp"
 
 PYBIND11_MODULE(ndtess, m) {
