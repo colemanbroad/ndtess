@@ -49,6 +49,8 @@ namespace ndtess {
 
             const T nil = 0;
 
+            //FOR LATER: check if this cache miss due to first jumping in y and then jumping in x
+            //           needs some attention
             static constexpr int offsets_y[4] = {-1,1,0,0};
             static constexpr int offsets_x[4] = {0,0,-1,1};
 
@@ -79,20 +81,6 @@ namespace ndtess {
                                                x2,
                                                y2,
                                                _lab[pix_offset]));
-                        // std::cout << ">> "
-                        //           << "("
-                        //           << std::setw(4) << x
-                        //           << std::setw(4) << y << ")"
-                        //           << "+("
-                        //           << std::setw(4) << offsets_x[off]
-                        //           << std::setw(4) << offsets_y[off] << ")"
-                        //           << std::setw(5) << _dist[pix_offset]
-                        //           << "("
-                        //           << std::setw(4) << x2
-                        //           << std::setw(4) << y2 << ")"
-                        //           << std::setw(5) << _dist[(y2)*_shape[0] + (x2)]
-                        //           << " " << _lab[pix_offset]
-                        //           << "\n";
                     }
                 }
             }
