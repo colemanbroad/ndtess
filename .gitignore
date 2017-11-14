@@ -17,3 +17,6 @@ tests/__init__.py
 tests/__pycache__/
 
 test_resources/
+*.so
+*.pyc
+*egg*
