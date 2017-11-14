@@ -17,6 +17,11 @@ pybind11_add_module(example src/ndtess.cpp)
 pybind11_add_module(ndtess src/ndtess.cpp)
 target_compile_features(example PUBLIC cxx_std_14)
 target_compile_features(ndtess PUBLIC cxx_std_14)
+target_include_directories(ndtess PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include >
+  $<INSTALL_INTERFACE:include/>
+  )
 
 if(${WITH_CXX_TESTS})
   # add_definitions(-g)
