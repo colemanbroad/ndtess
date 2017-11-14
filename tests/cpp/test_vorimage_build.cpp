@@ -13,7 +13,7 @@
 #include "fixtures.hpp"
 
 
-TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
+TEST_CASE_METHOD( image_fixture, "use empty heap", "[image]" ) {
 
     ndtess::pqueue<float> q;
 
@@ -23,6 +23,21 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
         auto i = ndtess::vorimage::build(q,data_.data(),shape);
         REQUIRE( ! i.empty() );
+
+    }
+
+}
+
+TEST_CASE_METHOD( image_fixture, "use synthetic dist map", "[image]" ) {
+
+    REQUIRE( data_.data() != nullptr );
+
+    SECTION("first pixel equal to python value"){
+
+        auto q = ndtess::heap::build(data_.data(),shape);
+        auto i = ndtess::vorimage::build(q,data_.data(),shape);
+        REQUIRE( ! i.empty() );
+        REQUIRE( i[0] == Approx(100.f) );
 
     }
 

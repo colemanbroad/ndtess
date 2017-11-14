@@ -37,15 +37,16 @@ def load_synthetic():
     return { 'img' : img, 'di' : distimg, 'cdi' : cdi, 'sindi' : sindistimg }
 
 
-def test_heapq_init_from_zeroes(load_synthetic):
+def test_vorimg_from_zeroes(load_synthetic):
     """
     run the tesselation on a labelled image where all objects have been identified already (null test)
     """
     di = np.zeros_like(load_synthetic["img"]).astype("float32")
     q = tess.initialize_heapq(load_synthetic["img"],di)
 
-    vorimg = build_vorimg(q,
-                          load_synthetic["img"],
-                          di)
+    vorimg = tess.build_vorimg(q,
+                               load_synthetic["img"],
+                               di)
 
     assert vorimg[0,0]
+    print("##",vorimg[0,0], load_synthetic["img"][0,0])
