@@ -69,5 +69,5 @@ def test_tessellate_on_null_image(load_synthetic):
     allnull[...] = 0
     vorimg = tess.tessellate_labimg(allnull) #, load_state['distimg'])
     assert type(vorimg) != type(None)
-    assert vorimg.shape != allnull.shape
-    assert vorimg == allnull
+    assert vorimg.shape == allnull.shape
+    assert np.alltrue(vorimg,allnull)
