@@ -35,12 +35,13 @@ def test_heapq_init_from_zeroes(load_synthetic):
     """
     run the tesselation on a labelled image where all objects have been identified already (null test)
     """
-    di = np.zeros_like(load_synthetic["img"]).astype("float16")
+    di = np.zeros_like(load_synthetic["img"]).astype("float32")
     q = tess.initialize_heapq(load_synthetic["img"],di)
 
-    assert q[0]
-    print()
-    for y in range(16):
-        print(" ".join([ ("%4.0f" % item) for item in list(load_synthetic["img"][y,:])] ))
+    # with open("py_array.txt","w") as f:
+    #     for y in range(16):
+    #         f.write("".join([ ("%4.0i" % int(item)) for item in list(load_synthetic["img"][y,:])] ))
+    #         f.write("\n")
 
+    assert q[0]
     print(q[0], len(q))

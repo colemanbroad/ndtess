@@ -12,6 +12,7 @@ from setuptools.command.build_ext import build_ext
 
 class CMakeExtension(Extension):
 
+
     def __init__(self, name, sourcedir=''):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
@@ -19,15 +20,9 @@ class CMakeExtension(Extension):
 
 class CMakeBuild(build_ext):
 
-    user_options = [('cmake-args=', 'C', "Arguments to pass to cmake call"),
-                    ('build-args=', 'A', "Arguments to pass to cmake build command (after --)")
-    ]
-
-    def initialize_options(self):
-        self.user_cmake_args = None
-        self.user_build_args = None
 
     def run(self):
+
         try:
             out = subprocess.check_output(['cmake', '--version'])
         except OSError:
@@ -45,10 +40,14 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
+
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
+
+        if self.compiler:
+            cmake_args += ['-DCMAKE_CXX_COMPILER='+self.compiler]
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
@@ -63,12 +62,6 @@ class CMakeBuild(build_ext):
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j4']
-
-        if self.user_cmake_args:
-            cmake_args += self.user_cmake_args
-
-        if self.user_build_args:
-            build_args += self.user_build_args
 
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(
@@ -98,6 +91,9 @@ class CatchTestCommand(st_test):
     def initialize_options(self):
         self.pytest_args = None
         self.ctest_args = None
+
+    def finalize_options(self):
+        pass
 
     def distutils_dir_name(self, dname):
         """Returns the name of a distutils build directory"""

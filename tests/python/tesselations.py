@@ -31,17 +31,30 @@ def initialize_heapq(labimg, distimg):
     heapq.heapify(heap)
     inbounds = _inbounds(labimg)
 
-    for y in range(labimg.shape[0]):
-        for x in range(labimg.shape[1]):
-            l = labimg[y,x]
-            if l != 0:
-                for dx,dy in NEIGHBOR_GRID:
-                    x2,y2 = x+dx, y+dy
-                    if inbounds(y2,x2):
-                        d1 = distimg[y,x]
-                        d2 = distimg[y2,x2]
-                        dist = distance(d1,d2)
-                        heapq.heappush(heap, (dist, x2, y2, l))
+    for x in range(labimg.shape[0]):
+         for y in range(labimg.shape[1]):
+             l = labimg[x,y]
+             if l != 0:
+                 for dx,dy in NEIGHBOR_GRID:
+                     x2,y2 = x+dx, y+dy
+                     if inbounds(x2,y2):
+                         d1 = distimg[x,y]
+                         d2 = distimg[x2, y2]
+                         dist = distance(d1,d2)
+                         print(">> (%3i %3i) %4.1f (%3i %3i) %4.1f %4.1f" % (y,x,d1,y2,x2,d2,l))
+                         heapq.heappush(heap, (dist, x2, y2, l))
+
+    # for y in range(labimg.shape[0]):
+    #     for x in range(labimg.shape[1]):
+    #         l = labimg[y,x]
+    #         if l != 0:
+    #             for dx,dy in NEIGHBOR_GRID:
+    #                 x2,y2 = x+dx, y+dy
+    #                 if inbounds(y2,x2):
+    #                     d1 = distimg[y,x]
+    #                     d2 = distimg[y2,x2]
+    #                     dist = distance(d1,d2)
+    #                     heapq.heappush(heap, (dist, x2, y2, l))
     return heap
 
 def initialize_heapq_coords(coords, labels, distimg):

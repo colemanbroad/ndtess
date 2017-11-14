@@ -24,7 +24,8 @@ namespace ndtess {
         template <typename T>
         using pqueue = std::priority_queue<item<T>,
                                            std::vector<item<T> >,
-                                           decltype(&compare<T>::operator())>;
+                                           compare<T>
+                                           >;
 
         template <typename T>
         using pvec = std::vector< item<T> >;
@@ -32,7 +33,7 @@ namespace ndtess {
 
 
         template <typename T>
-        static pvec<T> build(const T* _lab,
+        static pqueue<T> build(const T* _lab,
                              const std::vector<std::size_t>& _shape,
                              const float* _dist){
 
@@ -48,15 +49,17 @@ namespace ndtess {
 
             const T nil = 0;
 
-            static constexpr int offsets_x[4] = {-1,1,0,0};
-            static constexpr int offsets_y[4] = {0,0,-1,1};
-            std::vector<local_item> under_heap;
-            under_heap.reserve(4*len);
+            static constexpr int offsets_y[4] = {-1,1,0,0};
+            static constexpr int offsets_x[4] = {0,0,-1,1};
 
             std::int64_t x2 = 0;
             std::int64_t y2 = 0;
             constexpr T epsilon = std::numeric_limits<T>::epsilon();
 
+            compare<T> lc;
+            pvec<T> under_heap;
+            queue q(lc);
+            std::cout.precision(1);
             for(std::int64_t y = 0;y < _shape[1];++y){
                 for(std::int64_t x = 0;x < _shape[0];++x){
 
@@ -72,26 +75,36 @@ namespace ndtess {
                             continue;
 
                         float res = 1. + std::abs(_dist[pix_offset] + _dist[(y2)*_shape[0] + (x2)]);
-                        under_heap.push_back(std::make_tuple(res,
-                                                             x2,
-                                                             y2,
-                                                             _lab[pix_offset]));
+                        q.push(std::make_tuple(res,
+                                               x2,
+                                               y2,
+                                               _lab[pix_offset]));
+                        // std::cout << ">> "
+                        //           << "("
+                        //           << std::setw(4) << x
+                        //           << std::setw(4) << y << ")"
+                        //           << "+("
+                        //           << std::setw(4) << offsets_x[off]
+                        //           << std::setw(4) << offsets_y[off] << ")"
+                        //           << std::setw(5) << _dist[pix_offset]
+                        //           << "("
+                        //           << std::setw(4) << x2
+                        //           << std::setw(4) << y2 << ")"
+                        //           << std::setw(5) << _dist[(y2)*_shape[0] + (x2)]
+                        //           << " " << _lab[pix_offset]
+                        //           << "\n";
                     }
                 }
             }
 
-
-            compare<T> lc;
-
-            std::make_heap(under_heap.begin(),under_heap.end(), lc);
-            return under_heap;
+            return q;
 
         }
 
 
          template <typename T>
-         static pvec<T> build(const T* _lab,
-                              const std::vector<std::size_t>& _shape){
+         static pqueue<T> build(const T* _lab,
+                                const std::vector<std::size_t>& _shape){
 
             const std::size_t len = std::accumulate(std::begin(_shape),
                                                     std::end(_shape),

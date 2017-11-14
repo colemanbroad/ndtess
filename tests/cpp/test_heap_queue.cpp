@@ -1,6 +1,7 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <algorithm>
 
@@ -64,7 +65,6 @@ TEST_CASE_METHOD( image_fixture, "fixture data correct", "[image]" ) {
         REQUIRE( data_[2*shape[1]+12] != 0.f );
         REQUIRE( data_[2*shape[1]+12] == 100.f );
     }
-
 }
 
 
@@ -142,12 +142,12 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
         REQUIRE( q.size() == 239 );
 
-        auto i = q.front();
+        auto i = q.top();
 
         REQUIRE( std::get<0>(i) == Approx ( 1.f ) );
-        CHECK( std::get<1>(i) == 0 );
-        CHECK( std::get<2>(i) == 11 );
-        REQUIRE( std::get<3>(i) == Approx ( 42.f ) );
+        CHECK( std::get<1>(i) == 10 );
+        CHECK( std::get<2>(i) == 0 );
+        REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
 
     }
 }

@@ -15,8 +15,8 @@ add_subdirectory(share/pybind11)
 
 pybind11_add_module(example src/ndtess.cpp)
 pybind11_add_module(ndtess src/ndtess.cpp)
-target_compile_features(example PUBLIC cxx_auto_type)
-target_compile_features(ndtess PUBLIC cxx_auto_type)
+target_compile_features(example PUBLIC cxx_std_14)
+target_compile_features(ndtess PUBLIC cxx_std_14)
 
 if(${WITH_CXX_TESTS})
   # add_definitions(-g)
