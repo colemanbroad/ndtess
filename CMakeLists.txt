@@ -24,7 +24,7 @@ target_include_directories(ndtess PUBLIC
   )
 
 if(${WITH_CXX_TESTS})
-  # add_definitions(-g)
+  add_definitions(-g -O0)
   add_subdirectory(tests/cpp)
   include(tests/cpp/CTestLists.txt)
   set(WITH_TESTS ON)
