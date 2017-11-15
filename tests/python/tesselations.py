@@ -94,8 +94,10 @@ def build_vorimg(heap, vorimg_0, distimg):
     vorimg = vorimg_0.copy()
 
     inbounds = _inbounds(vorimg)
+    #print()
     while len(heap) > 0:
         d,x,y,l = heapq.heappop(heap)
+        #print("-- %4.1f %4i %4i %4.1f" % (d,x,y,l))
         if vorimg[x,y]==0:
             vorimg[x,y] = l
             for dx, dy in NEIGHBOR_GRID:
@@ -107,6 +109,7 @@ def build_vorimg(heap, vorimg_0, distimg):
                         d2 = distimg[x2, y2]
                         nd = distance(d1,d2) + d
                         heapq.heappush(heap, (nd, x2, y2, l))
+                        #print("++ %4.1f %4i %4i %4.1f" %(nd,x2,y2,l))
     return vorimg
 
 # ----
