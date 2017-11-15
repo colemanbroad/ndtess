@@ -1,2 +1,3 @@
 add_test(NAME cpp_add_scalar COMMAND test_cpp_add_scalar)
 add_test(NAME heap_queue COMMAND test_heap_queue)
+add_test(NAME vorimage_build COMMAND test_vorimage_build)
