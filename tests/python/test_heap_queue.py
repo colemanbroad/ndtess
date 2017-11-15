@@ -51,7 +51,10 @@ def test_heapq_init_from_zeroes(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 100.
-    print("# from_0s > ",q[0], len(q))
+
+    for i in range(5):
+        t = q.heappop()
+        print("# from_zeroes [%2i/%2i] %4f %2i %2i %4f" % i, len(q),t[0],t[1],t[2],t[3])
 
 
 def test_heapq_init_from_constant(load_synthetic):
@@ -68,7 +71,9 @@ def test_heapq_init_from_constant(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 100.
-    print("# from_constant > ",q[0], len(q))
+    for i in range(5):
+        t = q.heappop()
+        print("# from_constant [%2i/%2i] %4f %2i %2i %4f" % i, len(q),t[0],t[1],t[2],t[3])
 
 
 def test_heapq_init_from_sinus(load_synthetic):
@@ -86,7 +91,10 @@ def test_heapq_init_from_sinus(load_synthetic):
     assert q[0][-1] == 100.
     assert q[0][1] == 0
     assert q[0][2] == 10
-    print("# from_sinus > ",q[0], len(q))
+
+    for i in range(5):
+        t = q.heappop()
+        print("# from_sinus [%2i/%2i] %4f %2i %2i %4f" % i, len(q),t[0],t[1],t[2],t[3])
 
 def test_heapq_init_from_random(load_synthetic):
     """
