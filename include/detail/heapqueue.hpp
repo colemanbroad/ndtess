@@ -39,7 +39,7 @@ namespace ndtess {
 
             std::int64_t x2 = 0;
             std::int64_t y2 = 0;
-            constexpr T epsilon = std::numeric_limits<T>::epsilon();
+            static constexpr T epsilon = std::numeric_limits<T>::epsilon();
 
             compare<T> lc;
             pvec<T> under_heap;
@@ -48,7 +48,7 @@ namespace ndtess {
             for(std::int64_t y = 0;y < _shape[1];++y){
                 for(std::int64_t x = 0;x < _shape[0];++x){
 
-                    std::size_t pix_offset = y*_shape[0] + x;
+                    std::size_t pix_offset = y*_shape[1] + x;
                     if(std::abs(_lab[pix_offset]) < epsilon)
                         continue;
 
@@ -56,10 +56,10 @@ namespace ndtess {
 
                         x2 = x + offsets_x[off];
                         y2 = y + offsets_y[off];
-                        if(!( x2 >= 0 && x2 < _shape[0] && y2 >= 0 && y2 < _shape[1] ))
+                        if(!( x2 >= 0 && x2 < _shape[1] && y2 >= 0 && y2 < _shape[0] ))
                             continue;
 
-                        float res = 1. + std::abs(_dist[pix_offset] + _dist[(y2)*_shape[0] + (x2)]);
+                        float res = 1. + std::abs(_dist[pix_offset] + _dist[(y2)*_shape[1] + (x2)]);
                         q.push(std::make_tuple(res,
                                                x2,
                                                y2,
