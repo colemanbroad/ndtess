@@ -103,4 +103,8 @@ def test_heapq_init_from_random(load_synthetic):
     assert q[0][-1] == 100.
     assert q[0][1] == 7
     assert q[0][2] == 15
-    print("# from_random > ",q[0], len(q))
+
+
+    for i in range(5):
+        t = q.heappop()
+        print("# from_random [%2i/%2i] %4f %2i %2i %4f" % i, len(q),t[0],t[1],t[2],t[3])
