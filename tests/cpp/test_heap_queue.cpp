@@ -96,19 +96,48 @@ TEST_CASE_METHOD( image_fixture, "create heap from image", "[image]" ) {
 
     }
 
-    SECTION("compare outcome to python implementation with default map"){
+    SECTION("compare outcome to python implementation with default map (zeroes)"){
 
         auto q = ndtess::heap::build(data_.data(),shape);
 
         REQUIRE( q.size() == 239 );
 
-        auto i = q.top();
+        //auto i = q.top();
 
-        REQUIRE( std::get<0>(i) == Approx ( 1.f ) );
-        CHECK( std::get<1>(i) == 10 );
-        CHECK( std::get<2>(i) == 0 );
-        REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
+        // REQUIRE( std::get<0>(i) == Approx ( 1.f ) );
+        // CHECK( std::get<1>(i) == 10 );
+        // CHECK( std::get<2>(i) == 0 );
+        // REQUIRE( std::get<3>(i) == Approx ( 100.f ) );
 
+        const std::vector<ndtess::item<float> > expected = {std::make_tuple(1.f, 10, 0, 100.f),
+                                                    std::make_tuple(1.f, 11, 0, 100.f),
+                                                    std::make_tuple(1.f, 12, 0, 100.f),
+                                                    std::make_tuple(1.f, 13, 0, 100.f),
+                                                    std::make_tuple(1.f, 14, 0, 100.f),
+                                                    std::make_tuple(1.f,  9, 1, 100.f),
+                                                    std::make_tuple(1.f,  9, 1, 100.f),
+                                                    std::make_tuple(1.f, 10, 1, 100.f),
+                                                    std::make_tuple(1.f, 10, 1, 100.f),
+                                                    std::make_tuple(1.f, 11, 1, 100.f),
+                                                    std::make_tuple(1.f, 11, 1, 100.f),
+                                                    std::make_tuple(1.f, 11, 1, 100.f),
+                                                    std::make_tuple(1.f, 12, 1, 100.f),
+                                                    std::make_tuple(1.f, 12, 1, 100.f),
+                                                    std::make_tuple(1.f, 12, 1, 100.f),
+                                                    std::make_tuple(1.f, 13, 1, 100.f)
+        };
+
+
+        for( int i = 0;i < expected.size() ;++i){
+            auto t = q.top();
+            auto e = expected[i];
+            INFO("item :: " << i);
+            REQUIRE( std::get<0>(t) == Approx ( std::get<0>(e) ) );
+            CHECK  ( std::get<1>(t) == std::get<1>(e) );
+            CHECK  ( std::get<2>(t) == std::get<2>(e)  );
+            REQUIRE( std::get<3>(t) == Approx (  std::get<3>(e) ) );
+            q.pop();
+        }
     }
 
     SECTION("compare outcome to python implementation with constant map"){
