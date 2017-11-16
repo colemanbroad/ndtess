@@ -2,6 +2,7 @@
 #define TESSELATE_H
 
 #include "detail/heapqueue.hpp"
+#include "detail/vorimage.hpp"
 
 #include "pybind11/pybind11.h"
 #include "pybind11/numpy.h"
@@ -30,10 +31,15 @@ namespace ndtess {
 
             //initialize heap queue
             const double* in = reinterpret_cast<const double*>(input.unchecked().data(0));
+
+            double* out = reinterpret_cast<double*>(result.mutable_unchecked().mutable_data(0));
+
             const T* di = reinterpret_cast<const T*>(distimg.unchecked().data(0));
             auto heap = heap::build(in,
                                     shape,
                                     di);
+
+            vorimage::build(out,heap,in,shape,di);
 
             return result;
 
