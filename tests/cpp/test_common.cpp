@@ -19,7 +19,7 @@ TEST_CASE( "comply-to-python-item0", "[operator<]" ) {
     auto bigger = std::make_tuple(14.f,0,0,42.f);
     auto smaller = std::make_tuple(12.f,0,0,42.f);
 
-    ndtess::compare<float> c;
+    std::less<ndtess::item<float>> c;
 
     REQUIRE( c(base,bigger) );
     REQUIRE( c(smaller,base) );
@@ -35,7 +35,7 @@ TEST_CASE( "comply-to-python-item1", "[operator<]" ) {
     auto bigger = std::make_tuple(13.f,2,0,42.f);
     auto smaller = std::make_tuple(13.f,0,0,42.f);
 
-    ndtess::compare<float> c;
+    std::less<ndtess::item<float>> c;
 
     REQUIRE( c(base,bigger) );
     REQUIRE( c(smaller,base) );
@@ -51,7 +51,7 @@ TEST_CASE( "comply-to-python-item2", "[operator<]" ) {
     auto bigger = std::make_tuple(13.f,0,2,42.f);
     auto smaller = std::make_tuple(13.f,0,0,42.f);
 
-    ndtess::compare<float> c;
+    std::less<ndtess::item<float>> c;
 
 
     REQUIRE( c(base,bigger) );
@@ -68,7 +68,7 @@ TEST_CASE( "comply-to-python-item3", "[operator<]" ) {
     auto bigger = std::make_tuple(13.f,0,0,43.f);
     auto smaller = std::make_tuple(13.f,0,0,41.f);
 
-    ndtess::compare<float> c;
+    std::less<ndtess::item<float>> c;
 
     REQUIRE( c(base,bigger) );
     REQUIRE( c(smaller,base) );
