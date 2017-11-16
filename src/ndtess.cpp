@@ -14,7 +14,10 @@ PYBIND11_MODULE(ndtess, m) {
     m.def("add_vectors", &ndtess::vector::add, "A function which adds two numpy arrays");
 
     //
-    m.def("tessellate_labimg", &ndtess::tesselate::labimg, "the C++ implementation of the voronoi tesselation");
+    m.def("tessellate_labimg",
+          &ndtess::tesselate::labimg,
+          "the C++ implementation of the voronoi tesselation",
+          py::arg("labimg"), py::arg("distimg"));
 }
 
 
