@@ -19,3 +19,8 @@ add_executable(test_vorimage_build test_vorimage_build.cpp $<TARGET_OBJECTS:catc
 target_compile_features(test_vorimage_build PUBLIC cxx_std_14)
 target_include_directories(test_vorimage_build PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include > )
 target_link_libraries(test_vorimage_build PRIVATE pybind11::embed)
+
+add_executable(test_common test_common.cpp $<TARGET_OBJECTS:catch_maino>)
+target_compile_features(test_common PUBLIC cxx_std_14)
+target_include_directories(test_common PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include > )
+target_link_libraries(test_common PRIVATE pybind11::embed)

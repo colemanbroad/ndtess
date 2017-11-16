@@ -14,7 +14,8 @@ namespace ndtess {
     template <typename T>
     struct compare {
         bool operator()(const item<T>& _lhs, const item<T>& _rhs){
-            return std::get<0>(_lhs) < std::get<0>(_rhs);
+
+            return _lhs < _rhs;
         }
     };
 
