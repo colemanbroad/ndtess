@@ -45,13 +45,21 @@ namespace ndtess {
 
         }
 
-        py::array_t<double> labimg(const py::array_t<double>& input) {
+        // py::array_t<double> labimg(const py::array_t<double>& input) {
 
-            auto distimg = py::array_t<float>(input);
-            auto mbuf = distimg.mutable_unchecked();
+        //     auto distimg = py::array_t<float>(input);
+        //     auto mbuf = distimg.mutable_unchecked();
 
-            std::fill(&mbuf[0], &mbuf[0] + distimg.size(),0.);
+        //     std::fill(&mbuf[0], &mbuf[0] + distimg.size(),0.);
 
+        //     auto result = labimg_impl(input, distimg);
+
+        //     return result;
+        // }
+
+        py::array_t<double> labimg(const py::array_t<double>& input, const py::array_t<float>& distimg) {
+
+            auto mbuf = distimg.unchecked();
             auto result = labimg_impl(input, distimg);
 
             return result;
