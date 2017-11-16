@@ -3,6 +3,7 @@
 
 #include "detail/common.hpp"
 
+#include <iomanip>
 #include <tuple>
 #include <vector>
 #include <queue>
@@ -41,9 +42,8 @@ namespace ndtess {
             std::int64_t y2 = 0;
             static constexpr T epsilon = std::numeric_limits<T>::epsilon();
 
-            compare<T> lc;
             pvec<T> under_heap;
-            queue q(lc);
+            queue q;
             std::cout.precision(1);
             for(std::int64_t y = 0;y < _shape[1];++y){
                 for(std::int64_t x = 0;x < _shape[0];++x){
@@ -60,10 +60,28 @@ namespace ndtess {
                             continue;
 
                         float res = 1. + std::abs(_dist[pix_offset] + _dist[(y2)*_shape[1] + (x2)]);
+                        std::cout << "<> "
+                                  << "(" << std::setw(3) << y
+                                  << std::setw(3) << x
+                                  << ")"
+                                  << std::setw(4) << _dist[pix_offset] << " "
+                                  << "(" << std::setw(3) << y2
+                                  << std::setw(3) << x2
+                                  << ")"
+                                  << std::setw(4) << _dist[(y2)*_shape[1] + (x2)]
+                                  << " " << _lab[pix_offset];
+
                         q.push(std::make_tuple(res,
                                                x2,
                                                y2,
                                                _lab[pix_offset]));
+                        auto t = q.top();
+                        std::cout << " -> "
+                                  << std::get<0>(t) << ", "
+                                  << std::get<1>(t) << ", "
+                                  << std::get<2>(t) << ", "
+                                  << std::get<3>(t) << " " << q.size()
+                                  << "\n";
                     }
                 }
             }

@@ -12,17 +12,9 @@ namespace ndtess {
     using item = std::tuple<float,std::size_t, std::size_t,T>;
 
     template <typename T>
-    struct compare {
-        bool operator()(const item<T>& _lhs, const item<T>& _rhs){
-
-            return _lhs < _rhs;
-        }
-    };
-
-    template <typename T>
     using pqueue = std::priority_queue<item<T>,
                                        std::vector<item<T> >,
-                                       compare<T>
+                                       std::less<item<T>>
                                        >;
 
     template <typename T>
