@@ -43,29 +43,27 @@ namespace ndtess {
 
             //FOR LATER: check if this cache miss due to first jumping in y and then jumping in x
             //           needs some attention
-            static constexpr int offsets_y[4] = {-1,1,0,0};
-            static constexpr int offsets_x[4] = {0,0,-1,1};
             std::int64_t x2 = 0;
             std::int64_t y2 = 0;
 
 
             while(!_heap.empty()){
 
-                std::tie(dist,x,y,label) = _heap.top();_heap.top();
+                std::tie(dist,x,y,label) = _heap.top();_heap.pop();
 
-                offset = y*_shape[1]+x;
+                offset = y*_shape[ndtess::in_x]+x;
                 if(std::abs(value[offset]) > epsilon)
                     continue;
 
                 value[offset] = label;
 
                 for(int off = 0;off < 4;++off){
-                    x2 = x + offsets_x[off];
-                    y2 = y + offsets_y[off];
-                    if(!( x2 >= 0 && x2 < _shape[1] && y2 >= 0 && y2 < _shape[0] ))
+                    x2 = x + ndtess::offsets_x[off];
+                    y2 = y + ndtess::offsets_y[off];
+                    if(!( x2 >= 0 && x2 < _shape[ndtess::in_x] && y2 >= 0 && y2 < _shape[ndtess::in_y] ))
                         continue;
 
-                    offset2 = y2*_shape[1]+x2;
+                    offset2 = y2*_shape[ndtess::in_x]+x2;
                     T newlabel = value[offset2];
                     if(newlabel <= epsilon){
                         auto d1 = _dist[offset];
