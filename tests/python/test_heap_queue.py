@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from . import tesselations as tess
-from . import printers
+#from . import printers
 
 np.random.seed(1307) #the zip code of the MPI CBG
 
@@ -46,16 +46,11 @@ def test_heapq_init_from_zeroes(load_synthetic):
     di = np.zeros_like(load_synthetic["img"]).astype("float32")
     q = tess.initialize_heapq(load_synthetic["img"],di)
 
-    # with open("py_array.txt","w") as f:
-    #     for y in range(16):
-    #         f.write("".join([ ("%4.0i" % int(item)) for item in list(load_synthetic["img"][y,:])] ))
-    #         f.write("\n")
-
     assert q[0]
     assert q[0][-1] == 42.
 
-    printers.store_ndarray("test_heapq_init_from_zeroes_input.ndarray",load_synthetic["img"] )
-    printers.store_heaplist("test_heapq_init_from_zeroes.hq",q )
+    # printers.store_ndarray("test_heapq_init_from_zeroes_input.ndarray",load_synthetic["img"] )
+    # printers.store_heaplist("test_heapq_init_from_zeroes.hq",q )
 
 
 def test_heapq_init_from_constant(load_synthetic):
@@ -72,8 +67,8 @@ def test_heapq_init_from_constant(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 42.
-    printers.store_ndarray("test_heapq_init_from_constant_input.ndarray",load_synthetic["img"] )
-    printers.store_heaplist("test_heapq_init_from_constant.hq",q )
+    # printers.store_ndarray("test_heapq_init_from_constant_input.ndarray",load_synthetic["img"] )
+    # printers.store_heaplist("test_heapq_init_from_constant.hq",q )
 
 
 def test_heapq_init_from_sinus(load_synthetic):
@@ -91,8 +86,8 @@ def test_heapq_init_from_sinus(load_synthetic):
     assert q[0][-1] == 100.
     assert q[0][1] == 10
     assert q[0][2] == 0
-    printers.store_ndarray("test_heapq_init_from_sinus_input.ndarray",load_synthetic["img"] )
-    printers.store_heaplist("test_heapq_init_from_sinus.hq",q )
+    # printers.store_ndarray("test_heapq_init_from_sinus_input.ndarray",load_synthetic["img"] )
+    # printers.store_heaplist("test_heapq_init_from_sinus.hq",q )
 
 def test_heapq_init_from_random(load_synthetic):
     """
@@ -110,5 +105,5 @@ def test_heapq_init_from_random(load_synthetic):
     assert q[0][1] == 15
     assert q[0][2] == 7
 
-    printers.store_ndarray("test_heapq_init_from_random_input.ndarray",load_synthetic["img"] )
-    printers.store_heaplist("test_heapq_init_from_random.hq",q )
+    # printers.store_ndarray("test_heapq_init_from_random_input.ndarray",load_synthetic["img"] )
+    # printers.store_heaplist("test_heapq_init_from_random.hq",q )
