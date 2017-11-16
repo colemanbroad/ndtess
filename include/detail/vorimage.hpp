@@ -16,10 +16,11 @@ namespace ndtess {
 
 
         template <typename T>
-        static std::vector<T> build(pqueue<T>& _heap,
-                                    const T* _lab,
-                                    const std::vector<std::size_t>& _shape,
-                                    const float* _dist){
+        static void build(T* result,
+                          pqueue<T>& _heap,
+                          const T* _lab,
+                          const std::vector<std::size_t>& _shape,
+                          const float* _dist){
 
             static constexpr T epsilon = std::numeric_limits<T>::epsilon();
             const std::size_t len = std::accumulate(std::begin(_shape),
@@ -28,10 +29,10 @@ namespace ndtess {
                                                     std::multiplies<std::size_t>()
                 );
 
-            std::vector<T> value(_lab, _lab + len);
+            // std::vector<T> value(_lab, _lab + len);
 
             if(_heap.empty() || !len)
-                return value;
+                return;
 
             float dist = 0;
             std::size_t x = 0;
@@ -52,10 +53,10 @@ namespace ndtess {
                 std::tie(dist,x,y,label) = _heap.top();_heap.pop();
 
                 offset = y*_shape[ndtess::in_x]+x;
-                if(std::abs(value[offset]) > epsilon)
+                if(std::abs(result[offset]) > epsilon)
                     continue;
 
-                value[offset] = label;
+                result[offset] = label;
 
                 for(int off = 0;off < 4;++off){
                     x2 = x + ndtess::offsets_x[off];
@@ -64,7 +65,7 @@ namespace ndtess {
                         continue;
 
                     offset2 = y2*_shape[ndtess::in_x]+x2;
-                    T newlabel = value[offset2];
+                    T newlabel = result[offset2];
                     if(newlabel <= epsilon){
                         auto d1 = _dist[offset];
                         auto d2 = _dist[offset2];
@@ -78,6 +79,28 @@ namespace ndtess {
 
                 }
             }
+
+            return ;
+
+        }
+
+
+        template <typename T>
+        static std::vector<T> build(pqueue<T>& _heap,
+                                    const T* _lab,
+                                    const std::vector<std::size_t>& _shape,
+                                    const float* _dist){
+
+
+            const std::size_t len = std::accumulate(std::begin(_shape),
+                                                    std::end(_shape),
+                                                    1,
+                                                    std::multiplies<std::size_t>()
+                );
+
+            std::vector<T> value(_lab, _lab + len);
+
+            build<T>(value.data(),_heap,_lab,_shape,_dist);
 
             return value;
 
