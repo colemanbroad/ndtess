@@ -26,3 +26,4 @@ def test_on_map_of_0s(synthetic_checkerboard):
     printers.store_ndarray("cpp_voronoi_on_map_of_0s_output.txt",cpp_vorimg)
 
     assert np.alltrue(cpp_vorimg[:4,:4] == 1)
+    assert np.alltrue(cpp_vorimg == py_vorimg)
