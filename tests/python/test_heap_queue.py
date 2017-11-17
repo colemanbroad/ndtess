@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from . import tesselations as tess
-#from . import printers
+from . import printers
 
 
 
@@ -16,7 +16,7 @@ def test_heapq_init_from_zeroes(load_synthetic):
     q = tess.initialize_heapq(load_synthetic["img"],di)
 
     assert q[0]
-    assert q[0][-1] == 42.
+    assert q[0][-1] == 100.
 
     # printers.store_ndarray("test_heapq_init_from_zeroes_input.ndarray",load_synthetic["img"] )
     # printers.store_heaplist("test_heapq_init_from_zeroes.hq",q )
@@ -35,7 +35,7 @@ def test_heapq_init_from_constant(load_synthetic):
 
 
     assert q[0]
-    assert q[0][-1] == 42.
+    assert q[0][-1] == 100.
     # printers.store_ndarray("test_heapq_init_from_constant_input.ndarray",load_synthetic["img"] )
     # printers.store_heaplist("test_heapq_init_from_constant.hq",q )
 
@@ -53,8 +53,8 @@ def test_heapq_init_from_sinus(load_synthetic):
 
     assert q[0]
     assert q[0][-1] == 100.
-    assert q[0][1] == 10
-    assert q[0][2] == 0
+    assert q[0][1] == 0
+    assert q[0][2] == 10
     # printers.store_ndarray("test_heapq_init_from_sinus_input.ndarray",load_synthetic["img"] )
     # printers.store_heaplist("test_heapq_init_from_sinus.hq",q )
 
