@@ -15,7 +15,7 @@ namespace ndtess {
     template <typename T>
     using pqueue = std::priority_queue<item<T>,
                                        std::vector<item<T> >,
-                                       std::greater<item<T>>
+                                       std::greater<item<T>> //the python variant uses less_or_equal_to
                                        >;
 
     template <typename T>
