@@ -42,15 +42,13 @@ namespace ndtess {
 
             T label = 0;
 
-            //FOR LATER: check if this cache miss due to first jumping in y and then jumping in x
-            //           needs some attention
             std::int64_t x2 = 0;
             std::int64_t y2 = 0;
 
 
             while(!_heap.empty()){
 
-                std::tie(dist,x,y,label) = _heap.top();_heap.pop();
+                std::tie(dist,y,x,label) = _heap.top();_heap.pop();
 
                 offset = y*_shape[ndtess::in_x]+x;
                 if(std::abs(result[offset]) > epsilon)
@@ -71,8 +69,8 @@ namespace ndtess {
                         auto d2 = _dist[offset2];
                         auto newdist = dist + std::abs(d1+d2) + 1.;
                         _heap.push(std::make_tuple(newdist,
-                                                   x2,
                                                    y2,
+                                                   x2,
                                                    label));
 
                     }
