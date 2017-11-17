@@ -74,3 +74,54 @@ TEST_CASE( "comply-to-python-item3", "[operator<]" ) {
     REQUIRE( c(smaller,base) );
 
 }
+
+TEST_CASE( "python_says", "[operator<]" ) {
+
+    //tuple comparison in python is lexicographic
+    //https://docs.python.org/3/reference/expressions.html#comparisons
+    auto lhs = std::make_tuple(1.f,10,0,100.f);
+    auto rhs = std::make_tuple(1.f,9,1,100.f);
+
+    std::less<ndtess::item<float>> c;
+
+    REQUIRE( !c(lhs,rhs) );
+
+    ndtess::pqueue<float> q;
+
+    SECTION("add-to-queue"){
+        q.push(lhs);
+        auto t = q.top();
+        REQUIRE( t == lhs );
+
+        q.push(rhs);
+        t = q.top();
+        REQUIRE( t != lhs );
+    }
+
+}
+
+
+TEST_CASE( "pqueue_ordering", "[operator<]" ) {
+
+    std::priority_queue<int> ltq;
+
+    SECTION("add"){
+        ltq.push(5);
+        ltq.push(1);
+        ltq.push(2);
+        ltq.push(0);
+        REQUIRE(ltq.top() == 5);
+    }
+
+
+    std::priority_queue<int,std::vector<int>, std::greater<int>> gtq;
+
+    SECTION("add"){
+        gtq.push(5);
+        gtq.push(1);
+        gtq.push(2);
+        gtq.push(0);
+        REQUIRE(gtq.top() == 0);
+    }
+
+}
