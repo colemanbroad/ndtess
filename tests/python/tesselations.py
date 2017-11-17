@@ -37,7 +37,7 @@ def initialize_heapq(labimg, distimg, row_major = True):
     inbounds = _inbounds(labimg)
     if not row_major:
         inbounds = _nonrow_major_inbounds(labimg)
-    print()
+    #print()
     if row_major:
         for y in range(labimg.shape[0]):
             for x in range(labimg.shape[1]):
@@ -50,8 +50,8 @@ def initialize_heapq(labimg, distimg, row_major = True):
                             d2 = distimg[y2,x2]
                             dist = distance(d1,d2)
 
-                            heapq.heappush(heap, (dist, x2, y2 , l))
-                            #print(">> (%3i %3i) %4.1f (%3i %3i) %4.1f %4.1f -> %s" % (y,x,d1,y2,x2,d2,l,str(heap[0])))
+                            heapq.heappush(heap, (dist, y2, x2 , l))
+                            #print("py > @(%3i %3i) _%4.1f %3i %3i %4.1f_ -> %s %i" % (y,x,dist,y2,x2,l,str(heap[0]),len(heap)))
     else:
         for x in range(labimg.shape[0]):
          for y in range(labimg.shape[1]):
@@ -92,7 +92,7 @@ def build_vorimg(heap, vorimg_0, distimg, row_major = True):
                             d1 = distimg[y,x]
                             d2 = distimg[y2,x2]
                             nd = distance(d1,d2) + d
-                            heapq.heappush(heap, (nd, x2, y2, l))
+                            heapq.heappush(heap, (nd, y2, x2, l))
 
     else:
         while len(heap) > 0:
