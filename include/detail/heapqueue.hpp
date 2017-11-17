@@ -60,20 +60,19 @@ namespace ndtess {
                         auto res = std::abs(d1 + d2) + 1.f;
 
 #ifdef NDTESS_TRACE
-                        std::cout << "<> "
-                                  << "(" << std::setw(3) << y
+                        std::cout << "cpp> @"
+                                  << "(" << std::setw(3) << y << " "
                                   << std::setw(3) << x
-                                  << ")"
-                                  << std::setw(4) << d1 << " "
-                                  << "(" << std::setw(3) << y2
+                                  << ") _"
+                                  << std::setw(5) << res << " "
+                                  << std::setw(3) << y2
                                   << std::setw(3) << x2
-                                  << ")"
-                                  << std::setw(4) << d2
-                                  << " " << _lab[pix_offset];
+                                  << " "
+                                  << std::setw(5) <<_lab[pix_offset];
 #endif
                         q.push(std::make_tuple(res,
-                                               x2,
                                                y2,
+                                               x2,
                                                _lab[pix_offset]));
 #ifdef NDTESS_TRACE
                         auto t = q.top();
