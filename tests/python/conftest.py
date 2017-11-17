@@ -32,10 +32,15 @@ def synthetic_checkerboard():
 
     #distimg can be any distribution of non-zero floating point numbers
     distimg = np.random.rand(*img.shape)*3.3
+    cdi = np.zeros_like(img).astype("float32")
+    cdi[:] = 3.3 #some number
+
+    sinargs = np.linspace(0,1,num=img.size).reshape(img.shape)
+    sindistimg = np.sin( sinargs ) + .1
 
     assert np.alltrue(distimg >= 0.)
 
-    return { 'img' : img, 'distimg' : distimg  }
+    return { 'img' : img, 'distimg' : distimg , 'cdi' : cdi , 'sindi' : sindistimg}
 
 @pytest.fixture(scope="module")
 def load_synthetic():

@@ -27,3 +27,71 @@ def test_on_map_of_0s(synthetic_checkerboard):
 
     assert np.alltrue(cpp_vorimg[:4,:4] == 1)
     assert np.alltrue(cpp_vorimg == py_vorimg)
+
+def test_on_map_of_constants(synthetic_checkerboard):
+    """
+    run the tesselation on a empty image
+    """
+    img = synthetic_checkerboard['img']
+    di = synthetic_checkerboard['cdi']
+
+    cpp_vorimg = tess.tessellate_labimg(img,di)
+
+    py_vorimg = pytess.tessellate_labimg(img,di)
+    assert np.alltrue(py_vorimg[:4,:4] == 1)
+    printers.store_ndarray("py_voronoi_on_map_of_constants_output.txt",py_vorimg)
+
+    assert cpp_vorimg.size > 0
+    assert cpp_vorimg.shape == synthetic_checkerboard['img'].shape
+    assert np.alltrue(synthetic_checkerboard['img'][1:3,1:3] == 1)
+
+    printers.store_ndarray("cpp_voronoi_input.txt",img)
+    printers.store_ndarray("cpp_voronoi_on_map_of_constants_output.txt",cpp_vorimg)
+
+    assert np.alltrue(cpp_vorimg[:4,:4] == 1)
+    assert np.alltrue(cpp_vorimg == py_vorimg)
+
+def test_on_map_of_sinus(synthetic_checkerboard):
+    """
+    run the tesselation on a empty image
+    """
+    img = synthetic_checkerboard['img']
+    di = synthetic_checkerboard['sindi']
+
+    cpp_vorimg = tess.tessellate_labimg(img,di)
+
+    py_vorimg = pytess.tessellate_labimg(img,di)
+    assert np.alltrue(py_vorimg[:4,:4] == 1)
+    printers.store_ndarray("py_voronoi_on_map_of_sinus_output.txt",py_vorimg)
+
+    assert cpp_vorimg.size > 0
+    assert cpp_vorimg.shape == synthetic_checkerboard['img'].shape
+    assert np.alltrue(synthetic_checkerboard['img'][1:3,1:3] == 1)
+
+    printers.store_ndarray("cpp_voronoi_input.txt",img)
+    printers.store_ndarray("cpp_voronoi_on_map_of_sinus_output.txt",cpp_vorimg)
+
+    assert np.alltrue(cpp_vorimg[:4,:4] == 1)
+    assert np.alltrue(cpp_vorimg == py_vorimg)
+
+def test_on_map_of_noise(synthetic_checkerboard):
+    """
+    run the tesselation on a empty image
+    """
+    img = synthetic_checkerboard['img']
+    di = synthetic_checkerboard['distimg']
+
+    cpp_vorimg = tess.tessellate_labimg(img,di)
+    py_vorimg = pytess.tessellate_labimg(img,di)
+
+    printers.store_ndarray("py_voronoi_on_map_of_noise_output.txt",py_vorimg)
+
+    assert cpp_vorimg.size > 0
+    assert cpp_vorimg.shape == synthetic_checkerboard['img'].shape
+    assert np.alltrue(synthetic_checkerboard['img'][1:3,1:3] == 1)
+
+    printers.store_ndarray("cpp_voronoi_input.txt",img)
+    printers.store_ndarray("cpp_voronoi_on_map_of_noise_output.txt",cpp_vorimg)
+
+    # assert np.alltrue(cpp_vorimg[:4,:4] == 1)
+    assert np.alltrue(cpp_vorimg == py_vorimg)

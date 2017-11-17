@@ -81,7 +81,7 @@ def build_vorimg(heap, vorimg_0, distimg, row_major = True):
 
     if row_major:
         while len(heap) > 0:
-            d,x,y,l = heapq.heappop(heap)
+            d,y,x,l = heapq.heappop(heap)
             if vorimg[y,x]==0:
                 vorimg[y,x] = l
                 for dy,dx in NEIGHBOR_GRID:
